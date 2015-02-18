@@ -1,7 +1,15 @@
 var Express = require('express');
 var fs = require('fs');
+var bodyParser = require('body-parser');
+var multer = require('multer');
+
 var app = Express();
 
+// Parse JSON
+app.use(bodyParser.json());
+// Parse forms
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(multer());
 app.use(Express.static(__dirname + '/public'));
 
 app.get('/', function(req, res, next){
@@ -11,6 +19,13 @@ app.get('/', function(req, res, next){
 		res.send(result);
 	})
 })
+
+app.post('/console-log', function(req, res, next){
+	var message = req.body.message;
+	if(!message) return res.status(400).send('message is required');
+	console.log(message);
+	res.send({result: 'success'});
+});
 
 app.listen(80);
 
